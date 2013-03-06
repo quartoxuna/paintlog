@@ -1,0 +1,7 @@
+logging	logging-module.html
+logging.color	logging.color-module.html
+logging.color.Formatter	logging.color.Formatter-class.html
+logging.color.Formatter.setColoring	logging.color.Formatter-class.html#setColoring
+logging.color.Formatter.coloring	logging.color.Formatter-class.html#coloring
+logging.color.Formatter.format	logging.color.Formatter-class.html#format
+logging.color.Formatter.__init__	logging.color.Formatter-class.html#__init__
