@@ -12,6 +12,6 @@ setup(
 		'colorama>=0.2.5'
 	],
 	dependency_links=[
-		'http://192.168.2.20/basket',
+		'http://192.168.2.20/basket/',
 	],
 )
