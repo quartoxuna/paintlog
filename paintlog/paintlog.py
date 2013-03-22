@@ -9,8 +9,7 @@
 @summary: Colored string formatting for Python's default logging module
 """
 
-from colorama import Fore as foreground
-from colorama import Back as background
+from colorama import Fore
 from colorama import Style as style
 from colorama import init as color_init
 import copy
@@ -24,16 +23,17 @@ class Formatter(logging.Formatter):
 	@type coloring: dict
 	"""
 	coloring = {
-	        'DEBUG': foreground.WHITE,
-	        'INFO': foreground.WHITE,
-	        'WARNING': foreground.WHITE,
-	        'ERROR': foreground.WHITE,
-	        'CRITICAL': foreground.WHITE
+	        'DEBUG': Fore.WHITE,
+	        'INFO': Fore.WHITE,
+	        'WARNING': Fore.WHITE,
+	        'ERROR': Fore.WHITE,
+	        'CRITICAL': Fore.WHITE
 	}
 
-	def __init__(self,fmt=None,datefmt=None):
-		super(Formatter,self).__init__(fmt,datefmt)
+	def __init__(self,fmt=None,datefmt=None,bright=True):
+		logging.Formatter.__init__(self,fmt,datefmt)
 		self.__rules = Formatter.coloring
+		self.__bright = bright
 
 	def setColor(self,level=None,color=None,**kwargs):
 		"""Changes color definitions for log levels.
@@ -45,7 +45,9 @@ class Formatter(logging.Formatter):
 		@type kwargs: **kwargs
 		"""
 		if level and color:
-			self.__rules[logging.getLevelName(level)] = color
+			self.__rules[level] = color
+			if self.__bright:
+				self.__rules[level] += style.BRIGHT
 		elif len(kwargs)>0:
 			for level,color in kwargs.items():
 				self.setColor(level,color)
@@ -57,11 +59,11 @@ class Formatter(logging.Formatter):
 		@returns: Formatted and colored string
 		@rtype: str
 		"""
-		msg = super(Formatter,self).format(record)
+		msg = logging.Formatter.format(self,record)
 		levelname = logging.getLevelName(record.levelno)
 		
 		# Insert colors
-		msg = msg.replace("<color>",self.__rules[levelname]).replace("</color>",foreground.RESET)
+		msg = msg.replace("<color>",self.__rules[levelname]).replace("</color>",style.RESET_ALL)
 		
 		# Insert styles
 		msg = msg.replace("<b>",style.DIM).replace("</b>",style.RESET_ALL)
