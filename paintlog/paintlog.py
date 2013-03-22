@@ -35,14 +35,20 @@ class Formatter(logging.Formatter):
 		super(Formatter,self).__init__(fmt,datefmt)
 		self.__rules = Formatter.coloring
 
-	def setColoring(self,level,color):
+	def setColor(self,level=None,color=None,**kwargs):
 		"""Changes color definitions for log levels.
-		@param level: The number of the loglevel to change
+		@param level: The Level to change
 		@type level: int
-		@param color: The ANSI sequence for the color, usually from the already imported 'foregorund' module
-		@type color: str
+		@param color: The color for the level
+		@type color: int
+		@param kwargs: Multi rule setting
+		@type kwargs: **kwargs
 		"""
-		self.__rules[logging.getLevelName(level)] = color
+		if level and color:
+			self.__rules[logging.getLevelName(level)] = color
+		elif len(kwargs)>0:
+			for level,color in kwargs.items():
+				self.setColor(level,color)
 		
 	def format(self, record):
 		"""Extends default formatting.
