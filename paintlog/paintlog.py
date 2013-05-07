@@ -10,7 +10,8 @@
 """
 
 from colorama import Fore
-from colorama import Style as style
+from colorama import Back
+from colorama import Style
 from colorama import init as color_init
 import copy
 import logging
@@ -47,7 +48,7 @@ class Formatter(logging.Formatter):
 		if level and color:
 			self.__rules[level] = color
 			if self.__bright:
-				self.__rules[level] += style.BRIGHT
+				self.__rules[level] += Style.BRIGHT
 		elif len(kwargs)>0:
 			for level,color in kwargs.items():
 				self.setColor(level,color)
@@ -63,10 +64,10 @@ class Formatter(logging.Formatter):
 		levelname = logging.getLevelName(record.levelno)
 		
 		# Insert colors
-		msg = msg.replace("<color>",self.__rules[levelname]).replace("</color>",style.RESET_ALL)
+		msg = msg.replace("<color>",self.__rules[levelname]).replace("</color>",Style.RESET_ALL)
 		
 		# Insert styles
-		msg = msg.replace("<b>",style.DIM).replace("</b>",style.RESET_ALL)
+		msg = msg.replace("<b>",Style.DIM).replace("</b>",Style.RESET_ALL)
 		
 		# Return new formatted message
 		return msg
