@@ -21,6 +21,6 @@ setup(
 	],
 	keywords='python logging colorama',
 	license='GPL',
+	dependency_links=['http://sinaqs.secunet.de/pybasket'],
 	install_requires=['colorama'],
-	dependency_links=['http://sinaqs.secuent.de/pybasket/']
 )
