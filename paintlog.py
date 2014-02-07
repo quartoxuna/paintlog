@@ -8,11 +8,14 @@
 @requires: colorama>=0.2.5
 @summary: Colored string formatting for Python's default logging module
 """
+try:
+	from colorama import Fore
+	from colorama import Back
+	from colorama import Style
+	from colorama import init as color_init
+except ImportError,ie:
+	raise RuntimeError("It seems, you don't have installed the colorama module (%s)" % str(ie))
 
-from colorama import Fore
-from colorama import Back
-from colorama import Style
-from colorama import init as color_init
 import copy
 import logging
 

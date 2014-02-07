@@ -1,26 +1,14 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from distutils.core import setup
 
 setup(
 	name="paintlog",
-	version="1.1",
+	version="1.2",
 	description="Enables colored log messages for Python's default logging module",
 	author="Kai Borowiak",
 	author_email="kai.borowiak@secunet.de",
-	packages=['paintlog'],
-	long_description="""\
-	Provides custom Formatter using the 'colorama' module
-	to generate colored log messages in Python.
-	""",
-	classifiers=[
-		"License :: OSI Approved :: GNU General Public License (GPL)",
-		"Programming Language :: Python",
-		"Development Status :: 5 - Production/Stable",
-		"Intended Audience :: Developers",
-	],
+	py_modules=['paintlog'],
 	keywords='python logging colorama',
 	license='GPL',
-	dependency_links=['http://sinaqs.secunet.de/pybasket'],
-	install_requires=['colorama'],
 )
