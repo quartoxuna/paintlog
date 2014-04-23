@@ -2,24 +2,15 @@
 
 """
 @author: Kai Borowiak
-@version: 1.0
-@since: 06.03.2013
 @requires: logging>=2.7
 @requires: colorama>=0.2.5
 @summary: Colored string formatting for Python's default logging module
 """
-try:
-	from colorama import Fore
-	from colorama import Back
-	from colorama import Style
-	from colorama import init as color_init
-except ImportError,ie:
-	raise RuntimeError("It seems, you don't have installed the colorama module (%s)" % str(ie))
 
-import copy
+import colorama
 import logging
 
-color_init()
+colorama.init()
 
 class Formatter(logging.Formatter):
 	"""Colored formatter
@@ -27,11 +18,11 @@ class Formatter(logging.Formatter):
 	@type coloring: dict
 	"""
 	coloring = {
-	        'DEBUG': Fore.WHITE,
-	        'INFO': Fore.WHITE,
-	        'WARNING': Fore.WHITE,
-	        'ERROR': Fore.WHITE,
-	        'CRITICAL': Fore.WHITE
+	        'DEBUG': colorama.Fore.WHITE,
+	        'INFO': colorama.Fore.WHITE,
+	        'WARNING': colorama.Fore.WHITE,
+	        'ERROR': colorama.Fore.WHITE,
+	        'CRITICAL': colorama.Fore.WHITE
 	}
 
 	def __init__(self,fmt=None,datefmt=None,bright=True):
@@ -51,7 +42,7 @@ class Formatter(logging.Formatter):
 		if level and color:
 			self.__rules[level] = color
 			if self.__bright:
-				self.__rules[level] += Style.BRIGHT
+				self.__rules[level] += colorama.Style.BRIGHT
 		elif len(kwargs)>0:
 			for level,color in kwargs.items():
 				self.setColor(level,color)
@@ -67,10 +58,10 @@ class Formatter(logging.Formatter):
 		levelname = logging.getLevelName(record.levelno)
 		
 		# Insert colors
-		msg = msg.replace("<color>",self.__rules[levelname]).replace("</color>",Style.RESET_ALL)
+		msg = msg.replace("<color>",self.__rules[levelname]).replace("</color>",colorama.Style.RESET_ALL)
 		
 		# Insert styles
-		msg = msg.replace("<b>",Style.DIM).replace("</b>",Style.RESET_ALL)
+		msg = msg.replace("<b>",colorama.Style.DIM).replace("</b>",colorama.Style.RESET_ALL)
 		
 		# Return new formatted message
 		return msg
