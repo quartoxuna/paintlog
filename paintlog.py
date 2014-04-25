@@ -10,6 +10,9 @@
 import colorama
 import logging
 
+from colorama import Fore
+from colorama import Back
+
 colorama.init()
 
 class Formatter(logging.Formatter):
@@ -18,11 +21,11 @@ class Formatter(logging.Formatter):
 	@type coloring: dict
 	"""
 	coloring = {
-	        'DEBUG': colorama.Fore.WHITE,
-	        'INFO': colorama.Fore.WHITE,
-	        'WARNING': colorama.Fore.WHITE,
-	        'ERROR': colorama.Fore.WHITE,
-	        'CRITICAL': colorama.Fore.WHITE
+	        'DEBUG': Fore.WHITE,
+	        'INFO': Fore.WHITE,
+	        'WARNING': Fore.WHITE,
+	        'ERROR': Fore.WHITE,
+	        'CRITICAL': Fore.WHITE
 	}
 
 	def __init__(self,fmt=None,datefmt=None,bright=True):
