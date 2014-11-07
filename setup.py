@@ -1,6 +1,8 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-from distutils.core import setup
+# IMPORTS
+from setuptools import setup
 
 setup(
 	name="paintlog",
@@ -11,4 +13,8 @@ setup(
 	py_modules=['paintlog'],
 	keywords='python logging colorama',
 	license='GPL',
+	dependency_links=['http://sinaqs.secunet.de/pypi/'],
+	install_requires=[
+		'colorama',
+	],
 )
