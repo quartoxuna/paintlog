@@ -1,7 +1,0 @@
-paintlog	paintlog-module.html
-paintlog.paintlog	paintlog.paintlog-module.html
-paintlog.paintlog.Formatter	paintlog.paintlog.Formatter-class.html
-paintlog.paintlog.Formatter.coloring	paintlog.paintlog.Formatter-class.html#coloring
-paintlog.paintlog.Formatter.format	paintlog.paintlog.Formatter-class.html#format
-paintlog.paintlog.Formatter.__init__	paintlog.paintlog.Formatter-class.html#__init__
-paintlog.paintlog.Formatter.setColor	paintlog.paintlog.Formatter-class.html#setColor
