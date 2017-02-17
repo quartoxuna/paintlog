@@ -17,4 +17,5 @@ setup(
     install_requires=[
         'colorama',
     ],
+    zip_safe=False,
 )
