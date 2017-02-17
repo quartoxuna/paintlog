@@ -65,6 +65,3 @@ class ColoredFormatter(logging.Formatter):
         # Reset coloring
         record.levelname += Style.RESET_ALL
         return logging.Formatter.format(self,record)
-
-# Set ourself as new default formatter
-logging._defaultFormatter = ColoredFormatter()
