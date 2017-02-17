@@ -63,7 +63,7 @@ class ColoredFormatter(logging.Formatter):
         @returns: Formatted and colored string
         @rtype: str
         """
-		# Fix alignment issue when formatting ANSI codes
+        # Fix alignment issue when formatting ANSI codes
         # Get the wanted length of the 'levelname' in our format string
         # and the pad the length of the real levelname (e.g. 'INFO')
         # to that size
