@@ -9,15 +9,18 @@
 
 __all__ = ["ColoredFormatter","Foreground","Background","Style"]
 
-import colorama
+import re
 import logging
 
-import colorama
-colorama.init()
-
+from colorama import init as colorama_init
 from colorama import Fore as Foreground
 from colorama import Back as Background
 from colorama import Style
+
+# Initialize Colorama
+colorama_init()
+
+ALIGNMENT_REGEX = re.compile("%\(levelname\)-?(?P<alignment>\d*)s")
 
 class ColoredFormatter(logging.Formatter):
     """Colored formatter
@@ -60,8 +63,18 @@ class ColoredFormatter(logging.Formatter):
         @returns: Formatted and colored string
         @rtype: str
         """
-        levelno = record.levelno
-        record.levelname = self._rules[levelno] + record.levelname
-        # Reset coloring
-        record.levelname += Style.RESET_ALL
+		# Fix alignment issue when formatting ANSI codes
+        # Get the wanted length of the 'levelname' in our format string
+        # and the pad the length of the real levelname (e.g. 'INFO')
+        # to that size
+        # This has to be done, since python formatting does not handle
+        # ANSI reset codes well and strips backspaces after it.
+        try:
+            alignment = int(ALIGNMENT_REGEX.search(self._fmt).groups("alignment")[0])
+        except:
+            alignment = 0
+        alignment -= len(record.levelname)
+        if alignment < 0:
+            alignment = 0
+        record.levelname = self._rules[record.levelno] + record.levelname + Style.RESET_ALL + " " * alignment
         return logging.Formatter.format(self,record)
