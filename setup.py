@@ -6,7 +6,7 @@ from setuptools import setup
 
 setup(
     name="paintlog",
-    version="2.0",
+    version="2.1.0",
     description="Enables colored log messages for Python's default logging module",
     author="Kai Borowiak",
     author_email="kai.borowiak@secunet.de",
