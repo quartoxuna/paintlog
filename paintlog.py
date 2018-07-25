@@ -9,6 +9,8 @@
 
 __all__ = ["ColoredFormatter","Foreground","Background","Style"]
 
+__version__ = "2.1.0"
+
 import re
 import logging
 
