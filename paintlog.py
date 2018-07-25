@@ -7,6 +7,9 @@ PaintLog
 
 Colored Formatter for Python.
 
+How to Use:
+-----------
+
 .. rubric:: Example:
 
 .. code-block:: python
@@ -45,7 +48,11 @@ Colored Formatter for Python.
        <div style='background-color:red;color:white;font-family:Courier New;'>Critical</div>
    </div>
 
-.. rubric:: Change Color Definitions:
+|
+|
+
+Configuration
+-------------
 
 You can change the Coloring on the fly via the **__setitem__** method.
 
