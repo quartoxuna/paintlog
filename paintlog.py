@@ -28,20 +28,19 @@ class ColoredFormatter(logging.Formatter):
     @type coloring: dict
     """
 
-    DEFAULT_RULES = {\
-                        logging.DEBUG: Foreground.GREEN,\
-                        logging.INFO: Foreground.CYAN,\
-                        logging.WARNING: Foreground.MAGENTA,\
-                        logging.ERROR: Foreground.RED,\
-                        logging.CRITICAL: Foreground.WHITE + Background.RED\
-                    }
 
     def __init__(self, *args, **kwargs):
         logging.Formatter.__init__(self, *args, **kwargs)
         # Set default rules
-        self._rules = ColoredFormatter.DEFAULT_RULES
+        self._rules = {
+                          logging.DEBUG: Foreground.GREEN,
+                          logging.INFO: Foreground.CYAN,
+                          logging.WARNING: Foreground.MAGENTA,
+                          logging.ERROR: Foreground.RED,
+                          logging.CRITICAL: Foreground.WHITE + Background.RED
+                      }
 
-    def setRule(self,level=None,color=None,**kwargs):
+    def __setitem__(self, level, color):
         """Changes color definitions for log levels.
         @param level: The Level to change
         @type level: int
@@ -50,11 +49,7 @@ class ColoredFormatter(logging.Formatter):
         @param kwargs: Multi rule setting
         @type kwargs: **kwargs
         """
-        if level and color:
-            self._rules[level] = color
-        elif len(kwargs)>0:
-            for level,color in kwargs.items():
-                self.setColor(level,color)
+        self._rules[level] = color
 
     def format(self, record):
         """Extends default formatting.
