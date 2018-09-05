@@ -24,29 +24,29 @@ How to Use:
    ch.setLevel(logging.DEBUG)#
 
    # Create Colored Formatter like normal formatter
-   formatter = paintlog.ColoredFormatter('%(asctime)s [%(levelname)s] %(message)s')
+   formatter = paintlog.ColoredFormatter('[%(levelname)s] %(message)s')
 
    ch.setFormatter(fmt)
    logger.addHandler(ch)
 
    # Log various messages
-   logger.debug("Debug")
-   logger.warning("Warning")
-   logger.info("Info")
-   logger.error("Error")
-   logger.critical("Critical")
+   logger.debug("Debug Message")
+   logger.warning("Warning Message")
+   logger.info("Info Message")
+   logger.error("Error Message")
+   logger.critical("Critical Message")
 
 .. rubric:: Output:
 
 .. raw:: html
 
-   <div style='background-color:black;'>
-       <div style='color:green;font-family:Courier New;'>Debug</div>
-       <div style='color:magenta;font-family:Courier New;'>Warning</div>
-       <div style='color:cyan;font-famiy:Courier New;'>Info</div>
-       <div style='color:red;font-family:Courier New;'>Error</div>
-       <div style='background-color:red;color:white;font-family:Courier New;'>Critical</div>
-   </div>
+    <div style='background-color:black;color:white;'>
+        [<span style='color:green;font-family:Courier New;'>DEBUG</span>] Debug Message<br/>
+        [<span style='color:magenta;font-family:Courier New;'>WARINING</span>] Warning Message<br/>
+        [<span style='color:cyan;font-famiy:Courier New;'>INFO</span>] Info Message<br/>
+        [<span style='color:red;font-family:Courier New;'>ERROR</span>] Error Message<br/>
+        [<span style='background-color:red;color:white;font-family:Courier New;'>CRITICAL</span>] Critical Message
+    </div>
 
 |
 |
@@ -68,12 +68,12 @@ You can change the Coloring on the fly via the **__setitem__** method.
 
 .. raw:: html
 
-   <div style='background-color:black;'>
-       <div style='color:cyan;font-family:Courier New;'>Debug</div>
-       <div style='background-color:magenta;color:white;font-family:Courier New;'>Warning</div>
-       <div style='color:white;font-famiy:Courier New;'>Info</div>
-       <div style='background-color:red;color:white;font-family:Courier New;'>Error</div>
-       <div style='color:red;font-family:Courier New;'>Critical</div>
+   <div style='background-color:black;color:white;'>
+       [<span style='color:cyan;font-family:Courier New;'>DEBUG</span>] Debug Message<br/>
+       [<span style='background-color:magenta;color:white;font-family:Courier New;'>WARNING</span>] Warning Message<br/>
+       [<span style='color:white;font-famiy:Courier New;'>INFO</span>] Info Message<br/>
+       [<span style='background-color:red;color:white;font-family:Courier New;'>ERROR</span>] Error Message<br/>
+       [<span style='color:red;font-family:Courier New;'>CRITICAL</span>] Critical Message
    </div>
 """
 
