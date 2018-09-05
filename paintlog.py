@@ -1,15 +1,88 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 """
-@author: Kai Borowiak
-@requires: logging>=2.7
-@requires: colorama>=0.2.5
-@summary: Colored string formatting for Python's default logging module
+PaintLog
+========
+
+Colored Formatter for Python.
+
+How to Use:
+-----------
+
+.. rubric:: Example:
+
+.. code-block:: python
+
+   import logging
+   import paintlog
+
+   logger = logging.getLogger()
+   logger.setLevel(logging.DEBUG)
+
+   ch = logging.StreamHandler()
+   ch.setLevel(logging.DEBUG)#
+
+   # Create Colored Formatter like normal formatter
+   formatter = paintlog.ColoredFormatter('[%(levelname)s] %(message)s')
+
+   ch.setFormatter(fmt)
+   logger.addHandler(ch)
+
+   # Log various messages
+   logger.debug("Debug Message")
+   logger.warning("Warning Message")
+   logger.info("Info Message")
+   logger.error("Error Message")
+   logger.critical("Critical Message")
+
+.. rubric:: Output:
+
+.. raw:: html
+
+    <div style='background-color:black;color:white;'>
+        [<span style='color:green;font-family:Courier New;'>DEBUG</span>] Debug Message<br/>
+        [<span style='color:magenta;font-family:Courier New;'>WARINING</span>] Warning Message<br/>
+        [<span style='color:cyan;font-famiy:Courier New;'>INFO</span>] Info Message<br/>
+        [<span style='color:red;font-family:Courier New;'>ERROR</span>] Error Message<br/>
+        [<span style='background-color:red;color:white;font-family:Courier New;'>CRITICAL</span>] Critical Message
+    </div>
+
+|
+|
+
+Configuration
+-------------
+
+You can change the Coloring on the fly via the **__setitem__** method.
+
+.. code-block:: python
+
+   fmt['DEBUG']    = paintlog.Foreground.CYAN
+   fmt['WARNING']  = paintlog.Background.MAGENTA + paintlog.Foreground.WHITE
+   fmt['INFO']     = paintlog.Foreground.WHITE
+   fmt['ERROR']    = paintlog.Background.RED + paintlog.Foreground.WHITE
+   fmt['CRITICAL'] = paintlog.Foreground.RED
+
+..  rubric:: Output:
+
+.. raw:: html
+
+   <div style='background-color:black;color:white;'>
+       [<span style='color:cyan;font-family:Courier New;'>DEBUG</span>] Debug Message<br/>
+       [<span style='background-color:magenta;color:white;font-family:Courier New;'>WARNING</span>] Warning Message<br/>
+       [<span style='color:white;font-famiy:Courier New;'>INFO</span>] Info Message<br/>
+       [<span style='background-color:red;color:white;font-family:Courier New;'>ERROR</span>] Error Message<br/>
+       [<span style='color:red;font-family:Courier New;'>CRITICAL</span>] Critical Message
+   </div>
 """
 
 __all__ = ["ColoredFormatter","Foreground","Background","Style"]
 
+__version__ = "2.1.1"
+
 import re
+import copy
 import logging
 
 from colorama import init as colorama_init
@@ -23,25 +96,19 @@ colorama_init()
 ALIGNMENT_REGEX = re.compile("%\(levelname\)-?(?P<alignment>\d*)s")
 
 class ColoredFormatter(logging.Formatter):
-    """Colored formatter
-    @cvar coloring: Default color rules for the default log levels
-    @type coloring: dict
-    """
-
-    DEFAULT_RULES = {\
-                        logging.DEBUG: Foreground.GREEN,\
-                        logging.INFO: Foreground.CYAN,\
-                        logging.WARNING: Foreground.MAGENTA,\
-                        logging.ERROR: Foreground.RED,\
-                        logging.CRITICAL: Foreground.WHITE + Background.RED\
-                    }
 
     def __init__(self, *args, **kwargs):
         logging.Formatter.__init__(self, *args, **kwargs)
         # Set default rules
-        self._rules = ColoredFormatter.DEFAULT_RULES
+        self._rules = {
+                          logging.DEBUG: Foreground.GREEN,
+                          logging.INFO: Foreground.CYAN,
+                          logging.WARNING: Foreground.MAGENTA,
+                          logging.ERROR: Foreground.RED,
+                          logging.CRITICAL: Foreground.WHITE + Background.RED
+                      }
 
-    def setRule(self,level=None,color=None,**kwargs):
+    def __setitem__(self, level, color):
         """Changes color definitions for log levels.
         @param level: The Level to change
         @type level: int
@@ -50,11 +117,7 @@ class ColoredFormatter(logging.Formatter):
         @param kwargs: Multi rule setting
         @type kwargs: **kwargs
         """
-        if level and color:
-            self._rules[level] = color
-        elif len(kwargs)>0:
-            for level,color in kwargs.items():
-                self.setColor(level,color)
+        self._rules[level] = color
 
     def format(self, record):
         """Extends default formatting.
@@ -76,5 +139,6 @@ class ColoredFormatter(logging.Formatter):
         alignment -= len(record.levelname)
         if alignment < 0:
             alignment = 0
-        record.levelname = self._rules[record.levelno] + record.levelname + Style.RESET_ALL + " " * alignment
-        return logging.Formatter.format(self,record)
+        styled_record = copy.copy(record)
+        styled_record.levelname = self._rules[record.levelno] + record.levelname + Style.RESET_ALL + " " * alignment
+        return logging.Formatter.format(self,styled_record)

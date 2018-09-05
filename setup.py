@@ -4,9 +4,11 @@
 # IMPORTS
 from setuptools import setup
 
+execfile('./paintlog.py')
+
 setup(
     name="paintlog",
-    version="2.1.0",
+    version=__version__,
     description="Enables colored log messages for Python's default logging module",
     author="Kai Borowiak",
     author_email="kai.borowiak@secunet.de",
