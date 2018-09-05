@@ -82,6 +82,7 @@ __all__ = ["ColoredFormatter","Foreground","Background","Style"]
 __version__ = "2.1.0"
 
 import re
+import copy
 import logging
 
 from colorama import init as colorama_init
@@ -138,5 +139,6 @@ class ColoredFormatter(logging.Formatter):
         alignment -= len(record.levelname)
         if alignment < 0:
             alignment = 0
-        record.levelname = self._rules[record.levelno] + record.levelname + Style.RESET_ALL + " " * alignment
-        return logging.Formatter.format(self,record)
+        styled_record = copy.copy(record)
+        styled_record.levelname = self._rules[record.levelno] + record.levelname + Style.RESET_ALL + " " * alignment
+        return logging.Formatter.format(self,styled_record)
