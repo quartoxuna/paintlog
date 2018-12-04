@@ -138,15 +138,20 @@ class ColoredFormatter(logging.Formatter):
         self._rules[logging.ERROR]['levelname'] = Foreground.RED
         self._rules[logging.CRITICAL]['levelname'] = Foreground.WHITE + Background.RED
 
-    def update(self, level, **attrs):
+    def update(self, level, general=None, **attrs):
         """Change ruleset for specified log level.
 
         :param int level: Log level to change (according to `mod:logging` Module
+        ;param int general: General color definition for all attributes of the specified log level
         :param dict attrs: Attributes to change for specified log level
         """
         current_level = self._rules[level]
-        for key, value in attrs.items():
-            current_level[key] = value
+        if general:
+            for key in self.BLANK_RULE_SET.keys():
+                current_level[key] = general
+        else:
+            for key, value in attrs.items():
+                current_level[key] = value
 
     def __setitem__(self, level, color):
         """Changes color definitions for the levelname attribute of the log record.
