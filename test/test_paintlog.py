@@ -43,10 +43,12 @@ class Test_ColoredFormatter(unittest.TestCase):
 
     def test_general_color_definition(self):
         """General color definition for Log Level"""
-        fmt = ColoredFormatter()
+        fmt = ColoredFormatter('%(asctime)s [%(levelname)s] %(message)s')
         level = logging.ERROR
         fmt.update(level, general='RED')
-        self.assertTrue(all(map(lambda x: x == 'RED', fmt._rules[logging.ERROR].values())))
+        string = fmt._get_colored_format_string(level)
+        reset_string = '\x1b[0m'
+        self.assertEquals(string, 'RED' + '%(asctime)s [%(levelname)s] %(message)s' + reset_string)
 
 class Test_FormatStringRegex(unittest.TestCase):
     """Test Cases for Format String Search"""

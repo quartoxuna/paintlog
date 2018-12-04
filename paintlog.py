@@ -168,19 +168,27 @@ class ColoredFormatter(logging.Formatter):
         :param bool reset_style: Reset all Styles at the end of format string attribute
         """
         fmt = self._original_fmt
-        # Iterate over ruleset for the given log level
-        # and set original attribute with color definition in front of it
-        # Reset all styles at the end of the attribute
-        for attr, color in self._rules[loglevel].items():
-            # Find format string of attribute
-            match = re.compile(self.FORMAT_STRING_ATTRIBUTE % attr).search(fmt)
-            if match:
-                # Replace in reverse order so that the end position
-                # is not shifted to the right during the replacement
-                # at the start position
-                if reset_style:
-                    fmt = fmt[:match.end()] + Style.RESET_ALL + fmt[match.end():]
-                fmt = fmt[:match.start()] + color + fmt[match.start():]
+
+        # Check if general rule is active
+        # Check if all rules have the same color definition
+        if len(set(self._rules[loglevel].values())) == 1:
+            color = self._rules[loglevel].values().pop()
+            # Style the complete string
+            fmt = color + fmt + Style.RESET_ALL
+        else:
+            # Iterate over ruleset for the given log level
+            # and set original attribute with color definition in front of it
+            # Reset all styles at the end of the attribute
+            for attr, color in self._rules[loglevel].items():
+                # Find format string of attribute
+                match = re.compile(self.FORMAT_STRING_ATTRIBUTE % attr).search(fmt)
+                if match:
+                    # Replace in reverse order so that the end position
+                    # is not shifted to the right during the replacement
+                    # at the start position
+                    if reset_style:
+                        fmt = fmt[:match.end()] + Style.RESET_ALL + fmt[match.end():]
+                    fmt = fmt[:match.start()] + color + fmt[match.start():]
         return fmt
 
     def format(self, record):
