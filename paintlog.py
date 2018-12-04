@@ -94,6 +94,9 @@ colorama_init()
 
 class ColoredFormatter(logging.Formatter):
 
+    # Regex to identiy format string members
+    FORMAT_STRING_ATTRIBUTE = '(%%\((%s)\)[0-9-.]*[dfs]{1})'
+
     # Blank Rule Set for a LogRecord
     BLANK_RULE_SET = {
         'asctime': Style.RESET_ALL,
@@ -117,6 +120,10 @@ class ColoredFormatter(logging.Formatter):
 
     def __init__(self, *args, **kwargs):
         logging.Formatter.__init__(self, *args, **kwargs)
+
+        # Store original format string
+        self._original_fmt = self._fmt
+
         # Set default rules
         self._rules = {
             logging.DEBUG: self.BLANK_RULE_SET.copy(),
@@ -131,7 +138,7 @@ class ColoredFormatter(logging.Formatter):
         self._rules[logging.ERROR]['levelname'] = Foreground.RED
         self._rules[logging.CRITICAL]['levelname'] = Foreground.WHITE + Background.RED
 
-    def set(self, level, **attrs):
+    def update(self, level, **attrs):
         """Change ruleset for specified log level.
 
         :param int level: Log level to change (according to `mod:logging` Module
@@ -149,22 +156,29 @@ class ColoredFormatter(logging.Formatter):
         """
         self._rules[level]['levelname'] = color
 
-    def format(self, record):
-        """Changes the used format string according to relevant log level"""
-        fmt = self._fmt
+    def _get_colored_format_string(self, loglevel, reset_style=True):
+        """Returns updated format string using color definitions for the specified loglevel
 
+        :param int loglevel: Wanted Log Level
+        :param bool reset_style: Reset all Styles at the end of format string attribute
+        """
+        fmt = self._original_fmt
         # Iterate over ruleset for the given log level
         # and set original attribute with color definition in front of it
         # Reset all styles at the end of the attribute
-        for attr, color in self._rules[record.levelno].items():
+        for attr, color in self._rules[loglevel].items():
             # Find format string of attribute
-            match = re.compile('(%\(('+ attr + ')\)[0-9-.]*[dfs]{1})').search(fmt)
+            match = re.compile(self.FORMAT_STRING_ATTRIBUTE % attr).search(fmt)
             if match:
                 # Replace in reverse order so that the end position
                 # is not shifted to the right during the replacement
                 # at the start position
-                fmt = fmt[:match.end()] + Style.RESET_ALL + fmt[match.end():]
+                if reset_style:
+                    fmt = fmt[:match.end()] + Style.RESET_ALL + fmt[match.end():]
                 fmt = fmt[:match.start()] + color + fmt[match.start():]
+        return fmt
 
-        self._fmt = fmt
+    def format(self, record):
+        """Changes the used format string according to relevant log level"""
+        self._fmt = self._get_colored_format_string(record.levelno)
         return logging.Formatter.format(self, record)
