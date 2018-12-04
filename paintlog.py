@@ -82,7 +82,6 @@ __all__ = ["ColoredFormatter","Foreground","Background","Style"]
 __version__ = "2.1.1"
 
 import re
-import copy
 import logging
 
 from colorama import init as colorama_init
@@ -93,52 +92,79 @@ from colorama import Style
 # Initialize Colorama
 colorama_init()
 
-ALIGNMENT_REGEX = re.compile("%\(levelname\)-?(?P<alignment>\d*)s")
-
 class ColoredFormatter(logging.Formatter):
+
+    # Blank Rule Set for a LogRecord
+    BLANK_RULE_SET = {
+        'asctime': Style.RESET_ALL,
+        'created': Style.RESET_ALL,
+        'filename': Style.RESET_ALL,
+        'funcName': Style.RESET_ALL,
+        'levelname': Style.RESET_ALL,
+        'levelno': Style.RESET_ALL,
+        'lineno': Style.RESET_ALL,
+        'module': Style.RESET_ALL,
+        'msecs': Style.RESET_ALL,
+        'message': Style.RESET_ALL,
+        'name': Style.RESET_ALL,
+        'pathname': Style.RESET_ALL,
+        'process': Style.RESET_ALL,
+        'processName': Style.RESET_ALL,
+        'relativeCreated': Style.RESET_ALL,
+        'thread': Style.RESET_ALL,
+        'threadName': Style.RESET_ALL
+    }
 
     def __init__(self, *args, **kwargs):
         logging.Formatter.__init__(self, *args, **kwargs)
         # Set default rules
         self._rules = {
-                          logging.DEBUG: Foreground.GREEN,
-                          logging.INFO: Foreground.CYAN,
-                          logging.WARNING: Foreground.MAGENTA,
-                          logging.ERROR: Foreground.RED,
-                          logging.CRITICAL: Foreground.WHITE + Background.RED
-                      }
+            logging.DEBUG: self.BLANK_RULE_SET.copy(),
+            logging.INFO: self.BLANK_RULE_SET.copy(),
+            logging.WARNING: self.BLANK_RULE_SET.copy(),
+            logging.ERROR: self.BLANK_RULE_SET.copy(),
+            logging.CRITICAL: self.BLANK_RULE_SET.copy()
+        }
+        self._rules[logging.DEBUG]['levelname'] = Foreground.GREEN
+        self._rules[logging.INFO]['levelname'] = Foreground.CYAN
+        self._rules[logging.WARNING]['levelname'] = Foreground.MAGENTA
+        self._rules[logging.ERROR]['levelname'] = Foreground.RED
+        self._rules[logging.CRITICAL]['levelname'] = Foreground.WHITE + Background.RED
+
+    def set(self, level, **attrs):
+        """Change ruleset for specified log level.
+
+        :param int level: Log level to change (according to `mod:logging` Module
+        :param dict attrs: Attributes to change for specified log level
+        """
+        current_level = self._rules[level]
+        for key, value in attrs.items():
+            current_level[key] = value
 
     def __setitem__(self, level, color):
-        """Changes color definitions for log levels.
-        @param level: The Level to change
-        @type level: int
-        @param color: The color for the level
-        @type color: int
-        @param kwargs: Multi rule setting
-        @type kwargs: **kwargs
+        """Changes color definitions for the levelname attribute of the log record.
+
+        :param int level: The level to be changed
+        :param int color: Color definition according to `mod:colorama` module
         """
-        self._rules[level] = color
+        self._rules[level]['levelname'] = color
 
     def format(self, record):
-        """Extends default formatting.
-        @param record: The log record to format
-        @type record: LogRecord
-        @returns: Formatted and colored string
-        @rtype: str
-        """
-        # Fix alignment issue when formatting ANSI codes
-        # Get the wanted length of the 'levelname' in our format string
-        # and the pad the length of the real levelname (e.g. 'INFO')
-        # to that size
-        # This has to be done, since python formatting does not handle
-        # ANSI reset codes well and strips backspaces after it.
-        try:
-            alignment = int(ALIGNMENT_REGEX.search(self._fmt).groups("alignment")[0])
-        except:
-            alignment = 0
-        alignment -= len(record.levelname)
-        if alignment < 0:
-            alignment = 0
-        styled_record = copy.copy(record)
-        styled_record.levelname = self._rules[record.levelno] + record.levelname + Style.RESET_ALL + " " * alignment
-        return logging.Formatter.format(self,styled_record)
+        """Changes the used format string according to relevant log level"""
+        fmt = self._fmt
+
+        # Iterate over ruleset for the given log level
+        # and set original attribute with color definition in front of it
+        # Reset all styles at the end of the attribute
+        for attr, color in self._rules[record.levelno].items():
+            # Find format string of attribute
+            match = re.compile('(%\(('+ attr + ')\)[0-9-.]*[dfs]{1})').search(fmt)
+            if match:
+                # Replace in reverse order so that the end position
+                # is not shifted to the right during the replacement
+                # at the start position
+                fmt = fmt[:match.end()] + Style.RESET_ALL + fmt[match.end():]
+                fmt = fmt[:match.start()] + color + fmt[match.start():]
+
+        self._fmt = fmt
+        return logging.Formatter.format(self, record)
