@@ -19,6 +19,9 @@ setup(
     install_requires=[
         'colorama',
     ],
+    test_requires=[
+        'mock',
+    ],
     test_suite='test',
     zip_safe=False,
 )
