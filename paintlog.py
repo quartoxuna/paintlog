@@ -159,7 +159,7 @@ class ColoredFormatter(logging.Formatter):
             logging.CRITICAL: self.BLANK_RULE_SET.copy()
         }
         self._rules[logging.DEBUG]['levelname'] = Foreground.GREEN
-        self._rules[logging.INFO]['levelname'] = Foreground.CYAN
+        self._rules[logging.INFO]['levelname'] = Foreground.BLUE
         self._rules[logging.WARNING]['levelname'] = Foreground.MAGENTA
         self._rules[logging.ERROR]['levelname'] = Foreground.RED
         self._rules[logging.CRITICAL]['levelname'] = Foreground.WHITE + Background.RED
