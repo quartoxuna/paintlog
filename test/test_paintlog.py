@@ -50,6 +50,15 @@ class Test_ColoredFormatter(unittest.TestCase):
         reset_string = '\x1b[0m'
         self.assertEquals(string, 'RED' + '%(asctime)s [%(levelname)s] %(message)s' + reset_string)
 
+    @mock.patch("logging.Formatter.format")
+    def test_format_overwrite(self, format_func):
+        """Overwriting standard Formatter behaviour"""
+        fmt = ColoredFormatter('%(asctime)s [%(levelname)s] %(message)s')
+        record = logging.LogRecord("somename", logging.INFO, __file__, 57, "Hello World", None, None)
+        string = fmt.format(record)
+        format_func.assert_called_with(fmt, record)
+
+
 class Test_FormatStringRegex(unittest.TestCase):
     """Test Cases for Format String Search"""
 
