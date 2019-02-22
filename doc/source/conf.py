@@ -19,12 +19,12 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
 
-project = u'PaintLog'
-copyright = u'2018, Kai Borowiak <kai.borowiak@secunet.com>'
-author = u'Kai Borowiak <kai.borowiak@secunet.com>'
+project = 'PaintLog'
+copyright = '2018, Kai Borowiak <kai.borowiak@secunet.com>'
+author = 'Kai Borowiak <kai.borowiak@secunet.com>'
 
 # The short X.Y version
-execfile('../../paintlog.py')
+exec(compile(open('../../version.py').read(), '../../version.py', 'exec'))
 version = __version__
 # The full version, including alpha/beta/rc tags
 release = version
@@ -135,8 +135,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'PaintLog.tex', u'PaintLog Documentation',
-     u'Kai Borowiak \\textless{}kai.borowiak@secunet.com\\textgreater{}', 'manual'),
+    (master_doc, 'PaintLog.tex', 'PaintLog Documentation',
+     'Kai Borowiak \\textless{}kai.borowiak@secunet.com\\textgreater{}', 'manual'),
 ]
 
 
@@ -145,7 +145,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'paintlog', u'PaintLog Documentation',
+    (master_doc, 'paintlog', 'PaintLog Documentation',
      [author], 1)
 ]
 
@@ -156,7 +156,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'PaintLog', u'PaintLog Documentation',
+    (master_doc, 'PaintLog', 'PaintLog Documentation',
      author, 'PaintLog', 'One line description of project.',
      'Miscellaneous'),
 ]

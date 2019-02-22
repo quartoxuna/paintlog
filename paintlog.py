@@ -105,8 +105,6 @@ In addition to configuring each attribute, there's also the possibility to color
 
 __all__ = ["ColoredFormatter","Foreground","Background","Style"]
 
-__version__ = "2.2.0"
-
 import re
 import logging
 
@@ -159,7 +157,7 @@ class ColoredFormatter(logging.Formatter):
             logging.CRITICAL: self.BLANK_RULE_SET.copy()
         }
         self._rules[logging.DEBUG]['levelname'] = Foreground.GREEN
-        self._rules[logging.INFO]['levelname'] = Foreground.CYAN
+        self._rules[logging.INFO]['levelname'] = Foreground.BLUE
         self._rules[logging.WARNING]['levelname'] = Foreground.MAGENTA
         self._rules[logging.ERROR]['levelname'] = Foreground.RED
         self._rules[logging.CRITICAL]['levelname'] = Foreground.WHITE + Background.RED
@@ -173,10 +171,10 @@ class ColoredFormatter(logging.Formatter):
         """
         current_level = self._rules[level]
         if general:
-            for key in self.BLANK_RULE_SET.keys():
+            for key in list(self.BLANK_RULE_SET.keys()):
                 current_level[key] = general
         else:
-            for key, value in attrs.items():
+            for key, value in list(attrs.items()):
                 current_level[key] = value
 
     def __setitem__(self, level, color):
@@ -198,14 +196,14 @@ class ColoredFormatter(logging.Formatter):
         # Check if general rule is active
         # Check if all rules have the same color definition
         if len(set(self._rules[loglevel].values())) == 1:
-            color = self._rules[loglevel].values().pop()
+            color = list(self._rules[loglevel].values()).pop()
             # Style the complete string
             fmt = color + fmt + Style.RESET_ALL
         else:
             # Iterate over ruleset for the given log level
             # and set original attribute with color definition in front of it
             # Reset all styles at the end of the attribute
-            for attr, color in self._rules[loglevel].items():
+            for attr, color in list(self._rules[loglevel].items()):
                 # Find format string of attribute
                 match = re.compile(self.FORMAT_STRING_ATTRIBUTE % attr).search(fmt)
                 if match:
