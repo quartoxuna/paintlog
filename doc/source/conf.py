@@ -24,7 +24,7 @@ copyright = '2018, Kai Borowiak <kai.borowiak@secunet.com>'
 author = 'Kai Borowiak <kai.borowiak@secunet.com>'
 
 # The short X.Y version
-exec(compile(open('../../paintlog.py').read(), '../../paintlog.py', 'exec'))
+exec(compile(open('../../version.py').read(), '../../version.py', 'exec'))
 version = __version__
 # The full version, including alpha/beta/rc tags
 release = version
