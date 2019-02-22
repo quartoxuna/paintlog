@@ -4,7 +4,7 @@
 # IMPORTS
 from setuptools import setup
 
-execfile('./paintlog.py')
+exec(compile(open('./paintlog.py').read(), './paintlog.py', 'exec'))
 
 setup(
     name="paintlog",
