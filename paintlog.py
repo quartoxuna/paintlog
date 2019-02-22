@@ -105,8 +105,6 @@ In addition to configuring each attribute, there's also the possibility to color
 
 __all__ = ["ColoredFormatter","Foreground","Background","Style"]
 
-__version__ = "2.2.0"
-
 import re
 import logging
 
