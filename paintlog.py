@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
+r"""
 PaintLog
 ========
 
@@ -24,7 +24,9 @@ How to Use:
    ch.setLevel(logging.DEBUG)#
 
    # Create Colored Formatter like normal formatter
-   formatter = paintlog.ColoredFormatter('%(asctime)s [%(levelname)-8s] %(message)s', '%Y-%m-%dT%H:%M:%S')
+   formatter = paintlog.ColoredFormatter(
+                   '%(asctime)s [%(levelname)-8s] %(message)s', '%Y-%m-%dT%H:%M:%S'
+               )
 
    ch.setFormatter(formatter)
    logger.addHandler(ch)
@@ -45,7 +47,8 @@ How to Use:
         2018-12-04T12:02:44 [<span style='color:magenta;'>WARINING</span>] Warning Message<br/>
         2018-12-04T12:02:45 [<span style='color:cyan;'>INFO</span>] Info Message<br/>
         2018-12-04T12:02:46 [<span style='color:red;'>ERROR</span>] Error Message<br/>
-        2018-12-04T12:02:47 [<span style='background-color:red;color:white;'>CRITICAL</span>] Critical Message
+        2018-12-04T12:02:47 [<span style='background-color:red;color:white;'>CRITICAL
+    </span>] Critical Message
     </div>
 
 |
@@ -56,13 +59,18 @@ Configuration
 
 You can change the Coloring of all attribute on the fly via the **update()** method.
 
-The first parameter ist the *loglevel* that you want to change, while the other arguments are passed as *\*\*kwargs* and represent all attributes, which are avaialable for a default LogRecord, according to Python's internal *logging* module.
+The first parameter ist the *loglevel* that you want to change, while the other arguments are
+passed as *\*\*kwargs* and represent all attributes, which are avaialable for a default LogRecord,
+according to Python's internal *logging* module.
 
 .. code-block:: python
 
-   formatter.update(logging.DEBUG, levelname=paintlog.Foreground.CYAN, message=paintlog.Background.CYAN)
-   formatter.update(logging.WARNING, levelname=paintlog.Foreground.MAGENTA + paintlog.Foreground.White)
-   formatter.update(logging.INFO, levelname=paintlog.Foreground.WHITE, message=paintlog.Foreground.GREEN)
+   formatter.update(logging.DEBUG, levelname=paintlog.Foreground.CYAN,
+                    message=paintlog.Background.CYAN)
+   formatter.update(logging.WARNING,
+                    levelname=paintlog.Foreground.MAGENTA + paintlog.Foreground.White)
+   formatter.update(logging.INFO, levelname=paintlog.Foreground.WHITE,
+                    message=paintlog.Foreground.GREEN)
    formatter.update(logging.ERROR, levelname=paintlog.Background.RED + paintlog.Foreground.WHITE)
    formatter.update(logging.CRITICAL, levelname=paintlog.Foreground.RED)
 
@@ -71,12 +79,17 @@ The first parameter ist the *loglevel* that you want to change, while the other 
 .. raw:: html
 
    <div style='background-color:black;color:white;font-family:Courier New;'>
-       2018-12-04T12:03:40 [<span style='color:cyan;'>DEBUG</span>] <span style='background-color:cyan;'>Debug Message</span><br/>
-       2018-12-04T12:03:41 [<span style='background-color:magenta;color:white;'>WARNING</span>] Warning Message<br/>
-       2018-12-04T12:03:42 [<span style='color:white;'>INFO</span>] <span style='color:green;'>Info Message</span><br/>
-       2018-12-04T12:03:43 [<span style='background-color:red;color:white;'>ERROR</span>] Error Message<br/>
+       2018-12-04T12:03:40 [<span style='color:cyan;'>DEBUG</span>]
+   <span style='background-color:cyan;'>Debug Message</span><br/>
+       2018-12-04T12:03:41 [<span style='background-color:magenta;color:white;'>WARNING</span>]
+   Warning Message<br/>
+       2018-12-04T12:03:42 [<span style='color:white;'>INFO</span>]
+   <span style='color:green;'>Info Message</span><br/>
+       2018-12-04T12:03:43 [<span style='background-color:red;color:white;'>ERROR</span>]
+   Error Message<br/>
        2018-12-04T12:03:44 [<span style='color:red;'>CRITICAL</span>] Critical Message
    </div>
+
 
 |
 |
@@ -84,7 +97,8 @@ The first parameter ist the *loglevel* that you want to change, while the other 
 General Log Level Coloring
 --------------------------
 
-In addition to configuring each attribute, there's also the possibility to color the whole message, also using the **update()** method and the special *general* keyword argument.
+In addition to configuring each attribute, there's also the possibility to color the whole message,
+also using the **update()** method and the special *general* keyword argument.
 
 .. code-block:: python
 
@@ -95,15 +109,20 @@ In addition to configuring each attribute, there's also the possibility to color
 .. raw:: html
 
    <div style='background-color:black;color:white;font-family:Courier New;'>
-       2018-12-04T12:04:43 [<span style='color:cyan;'>DEBUG</span>] <span style='background-color:cyan;'>Debug Message</span><br/>
-       2018-12-04T12:04:44 [<span style='background-color:magenta;color:white;'>WARNING</span>] Warning Message<br/>
-       2018-12-04T12:04:45 [<span style='color:white;'>INFO</span>] <span style='color:green;'>Info Message</span><br/>
-       2018-12-04T12:04:46 [<span style='background-color:red;color:white;'>ERROR</span>] Error Message<br/>
-       <span style='color:white;background-color:red;'>2018-12-04T12:04:47 [CRITICAL] Critical Message</span>
+       2018-12-04T12:04:43 [<span style='color:cyan;'>DEBUG</span>]
+   <span style='background-color:cyan;'>Debug Message</span><br/>
+       2018-12-04T12:04:44 [<span style='background-color:magenta;color:white;'>WARNING</span>]
+   Warning Message<br/>
+       2018-12-04T12:04:45 [<span style='color:white;'>INFO</span>]
+   <span style='color:green;'>Info Message</span><br/>
+       2018-12-04T12:04:46 [<span style='background-color:red;color:white;'>ERROR</span>]
+   Error Message<br/>
+       <span style='color:white;background-color:red;'>2018-12-04T12:04:47 [CRITICAL]
+   Critical Message</span>
    </div>
 """
 
-__all__ = ["ColoredFormatter","Foreground","Background","Style"]
+__all__ = ["ColoredFormatter", "Foreground", "Background", "Style"]
 
 import re
 import logging
@@ -117,9 +136,10 @@ from colorama import Style
 colorama_init()
 
 class ColoredFormatter(logging.Formatter):
+    """Colored logging Formatter"""
 
     # Regex to identiy format string members
-    FORMAT_STRING_ATTRIBUTE = '(%%\((%s)\)[0-9-.]*[dfs]{1})'
+    FORMAT_STRING_ATTRIBUTE = r"(%%\((%s)\)[0-9-.]*[dfs]{1})"
 
     # Blank Rule Set for a LogRecord
     BLANK_RULE_SET = {
