@@ -15,14 +15,14 @@ class Test_ColoredFormatter(unittest.TestCase):
         """Update of Color Definition"""
         fmt = ColoredFormatter()
         fmt.update(logging.INFO, message='RED', levelname='GREEN')
-        self.assertEquals(fmt._rules[logging.INFO]['message'], 'RED')
-        self.assertEquals(fmt._rules[logging.INFO]['levelname'], 'GREEN')
+        self.assertEqual(fmt._rules[logging.INFO]['message'], 'RED')
+        self.assertEqual(fmt._rules[logging.INFO]['levelname'], 'GREEN')
 
     def test_setitem_compatabilty(self):
         """Backwards compatability for __setitem__ method"""
         fmt = ColoredFormatter()
         fmt[logging.INFO] = 'RED'
-        self.assertEquals(fmt._rules[logging.INFO]['levelname'], 'RED')
+        self.assertEqual(fmt._rules[logging.INFO]['levelname'], 'RED')
 
     def test_color_formatting_no_reset(self):
         """Replacement of format string without style reset"""
@@ -30,7 +30,7 @@ class Test_ColoredFormatter(unittest.TestCase):
         level = logging.INFO
         fmt.update(level, message='RED')
         string = fmt._get_colored_format_string(level, reset_style=False)
-        self.assertEquals(string, 'RED%(message)s')
+        self.assertEqual(string, 'RED%(message)s')
 
     def test_color_formatting_reset(self):
         """Replacement of format string with style reset"""
@@ -39,7 +39,7 @@ class Test_ColoredFormatter(unittest.TestCase):
         fmt.update(level, message='RED')
         string = fmt._get_colored_format_string(level)
         reset_string = '\x1b[0m'
-        self.assertEquals(string, 'RED' + '%(message)s' + reset_string)
+        self.assertEqual(string, 'RED' + '%(message)s' + reset_string)
 
     def test_general_color_definition(self):
         """General color definition for Log Level"""
@@ -48,7 +48,16 @@ class Test_ColoredFormatter(unittest.TestCase):
         fmt.update(level, general='RED')
         string = fmt._get_colored_format_string(level)
         reset_string = '\x1b[0m'
-        self.assertEquals(string, 'RED' + '%(asctime)s [%(levelname)s] %(message)s' + reset_string)
+        self.assertEqual(string, 'RED' + '%(asctime)s [%(levelname)s] %(message)s' + reset_string)
+
+    @mock.patch("logging.Formatter.format")
+    def test_format_overwrite(self, format_func):
+        """Overwriting standard Formatter behaviour"""
+        fmt = ColoredFormatter('%(asctime)s [%(levelname)s] %(message)s')
+        record = logging.LogRecord("somename", logging.INFO, __file__, 57, "Hello World", None, None)
+        string = fmt.format(record)
+        format_func.assert_called_with(fmt, record)
+
 
 class Test_FormatStringRegex(unittest.TestCase):
     """Test Cases for Format String Search"""
@@ -59,8 +68,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = 'XXX%(message)sXX'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 3)
-        self.assertEquals(match.end(), 14)
+        self.assertEqual(match.start(), 3)
+        self.assertEqual(match.end(), 14)
 
     def test_embedded_whitespace(self):
         """Check String: '   %(message)s  '"""
@@ -68,8 +77,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '   %(message)s  '
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 3)
-        self.assertEquals(match.end(), 14)
+        self.assertEqual(match.start(), 3)
+        self.assertEqual(match.end(), 14)
 
     def test_embedded_d(self):
         """Check String: 'ddd%(message)sdd'"""
@@ -77,8 +86,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = 'ddd%(message)sdd'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 3)
-        self.assertEquals(match.end(), 14)
+        self.assertEqual(match.start(), 3)
+        self.assertEqual(match.end(), 14)
 
     def test_embedded_s(self):
         """Check String: 'sss%(message)sss'"""
@@ -86,8 +95,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = 'sss%(message)sss'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 3)
-        self.assertEquals(match.end(), 14)
+        self.assertEqual(match.start(), 3)
+        self.assertEqual(match.end(), 14)
 
     def test_embedded_f(self):
         """Check String: 'fff%(message)sff'"""
@@ -95,8 +104,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = 'fff%(message)sff'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 3)
-        self.assertEquals(match.end(), 14)
+        self.assertEqual(match.start(), 3)
+        self.assertEqual(match.end(), 14)
 
     def test_embedded_dot(self):
         """Check String: '...%(message)s..'"""
@@ -104,8 +113,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '...%(message)s..'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 3)
-        self.assertEquals(match.end(), 14)
+        self.assertEqual(match.start(), 3)
+        self.assertEqual(match.end(), 14)
 
     def test_embedded_percent(self):
         """Check String: '%%%%(message)s%%'"""
@@ -113,8 +122,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '%%%%(message)s%%'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 3)
-        self.assertEquals(match.end(), 14)
+        self.assertEqual(match.start(), 3)
+        self.assertEqual(match.end(), 14)
 
     def test_string(self):
         """Check String: '%(message)s'"""
@@ -122,8 +131,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '%(message)s'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 0)
-        self.assertEquals(match.end(), len(fmt))
+        self.assertEqual(match.start(), 0)
+        self.assertEqual(match.end(), len(fmt))
 
     def test_string_width(self):
         """Check String: '%(levelname)20s'"""
@@ -131,8 +140,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '%(levelname)20s'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 0)
-        self.assertEquals(match.end(), len(fmt))
+        self.assertEqual(match.start(), 0)
+        self.assertEqual(match.end(), len(fmt))
 
     def test_string_alignment(self):
         """Check String: '%(levelname)-20s'"""
@@ -140,8 +149,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '%(levelname)-20s'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 0)
-        self.assertEquals(match.end(), len(fmt))
+        self.assertEqual(match.start(), 0)
+        self.assertEqual(match.end(), len(fmt))
 
     def test_decimal(self):
         """Check Decimal: '%(levelno)d'"""
@@ -149,8 +158,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '%(levelno)s'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 0)
-        self.assertEquals(match.end(), len(fmt))
+        self.assertEqual(match.start(), 0)
+        self.assertEqual(match.end(), len(fmt))
 
     def test_decimal_width(self):
         """Check Decimal: '%(levelno)10d'"""
@@ -158,8 +167,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '%(levelno)10d'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 0)
-        self.assertEquals(match.end(), len(fmt))
+        self.assertEqual(match.start(), 0)
+        self.assertEqual(match.end(), len(fmt))
 
     def test_decimal_alignment(self):
         """Check Decimal: '%(levelno)-5d'"""
@@ -167,8 +176,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '%(levelno)-5d'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 0)
-        self.assertEquals(match.end(), len(fmt))
+        self.assertEqual(match.start(), 0)
+        self.assertEqual(match.end(), len(fmt))
 
     def test_float(self):
         """Check Float: '%(created)f'"""
@@ -176,8 +185,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '%(created)f'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 0)
-        self.assertEquals(match.end(), len(fmt))
+        self.assertEqual(match.start(), 0)
+        self.assertEqual(match.end(), len(fmt))
 
     def test_float_width(self):
         """Check Float: '%(created)10f'"""
@@ -185,8 +194,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '%(created)10f'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 0)
-        self.assertEquals(match.end(), len(fmt))
+        self.assertEqual(match.start(), 0)
+        self.assertEqual(match.end(), len(fmt))
 
     def test_float_alignment(self):
         """Check Float: '%(created)-5f'"""
@@ -194,8 +203,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '%(created)-5f'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 0)
-        self.assertEquals(match.end(), len(fmt))
+        self.assertEqual(match.start(), 0)
+        self.assertEqual(match.end(), len(fmt))
 
     def test_float_percision(self):
         """Check Float: '%(created)-10.2f'"""
@@ -203,8 +212,8 @@ class Test_FormatStringRegex(unittest.TestCase):
         fmt = '%(created)-10.2f'
         match = regex.search(fmt)
         self.assertIsNotNone(match)
-        self.assertEquals(match.start(), 0)
-        self.assertEquals(match.end(), len(fmt))
+        self.assertEqual(match.start(), 0)
+        self.assertEqual(match.end(), len(fmt))
 
 if __name__ == "__main__":
     unittest.main()
