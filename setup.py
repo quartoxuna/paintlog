@@ -15,13 +15,13 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="paintlog-quartoxuna",
+    name="paintlog",
     version=VERSION['__version__'],
     author="Kai Borowiak",
     author_email="borowiak.kai@gmail.com",
     description="Colored log messages for Python's default logging module",
     long_description=long_description,
-    long_description_content="text/markdown",
+    long_description_content_type="text/markdown",
     url="https://github.com/quartoxuna/paintlog",
     py_modules=['paintlog'],
     classifiers=[
