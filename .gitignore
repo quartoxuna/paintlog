@@ -1,6 +1,2 @@
-*~
-*.pyc
-*.swp
-build
-dist
-*.egg*
+.*
+!.gitignore

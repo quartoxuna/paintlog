@@ -1,65 +1,50 @@
 #!/usr/bin/env python
 
+"""
+UnitTests for paintlog module
+-----------------------------
+"""
+
 # IMPORTS
-import re
-import mock
 import unittest
 
+import re
 import logging
+
 from paintlog import ColoredFormatter
 
-class Test_ColoredFormatter(unittest.TestCase):
+
+class TestColoredFormatter(unittest.TestCase):
     """Test Cases for ColoredFormatter"""
 
-    def test_rule_update(self):
-        """Update of Color Definition"""
-        fmt = ColoredFormatter()
-        fmt.update(logging.INFO, message='RED', levelname='GREEN')
-        self.assertEqual(fmt._rules[logging.INFO]['message'], 'RED')
-        self.assertEqual(fmt._rules[logging.INFO]['levelname'], 'GREEN')
+    def test_default(self):
+        """Default behaviour"""
+        fmt = ColoredFormatter('%(name)s %(levelname)s %(message)s')
+        record = logging.LogRecord(name='logger', level=logging.INFO, pathname='/tmp',
+                                   lineno=23, msg="Something", args=[], exc_info=None, func=None)
+        output = fmt.format(record)
+        self.assertEqual("logger INFO Something", output)
 
-    def test_setitem_compatabilty(self):
-        """Backwards compatability for __setitem__ method"""
-        fmt = ColoredFormatter()
-        fmt[logging.INFO] = 'RED'
-        self.assertEqual(fmt._rules[logging.INFO]['levelname'], 'RED')
+    def test_definition_level(self):
+        """Test format definition for log level"""
+        fmt = ColoredFormatter('%(name)s %(levelname)s %(message)s',
+                               DEBUG={'levelname': ('GREEN', 'RESET')})
+        record = logging.LogRecord(name='logger', level=logging.DEBUG, pathname='/tmp',
+                                   lineno=23, msg="Something", args=[], exc_info=None, func=None)
+        output = fmt.format(record)
+        self.assertEqual("logger GREENDEBUGRESET Something", output)
 
-    def test_color_formatting_no_reset(self):
-        """Replacement of format string without style reset"""
-        fmt = ColoredFormatter('%(message)s')
-        level = logging.INFO
-        fmt.update(level, message='RED')
-        string = fmt._get_colored_format_string(level, reset_style=False)
-        self.assertEqual(string, 'RED%(message)s')
-
-    def test_color_formatting_reset(self):
-        """Replacement of format string with style reset"""
-        fmt = ColoredFormatter('%(message)s')
-        level = logging.INFO
-        fmt.update(level, message='RED')
-        string = fmt._get_colored_format_string(level)
-        reset_string = '\x1b[0m'
-        self.assertEqual(string, 'RED' + '%(message)s' + reset_string)
-
-    def test_general_color_definition(self):
-        """General color definition for Log Level"""
-        fmt = ColoredFormatter('%(asctime)s [%(levelname)s] %(message)s')
-        level = logging.ERROR
-        fmt.update(level, general='RED')
-        string = fmt._get_colored_format_string(level)
-        reset_string = '\x1b[0m'
-        self.assertEqual(string, 'RED' + '%(asctime)s [%(levelname)s] %(message)s' + reset_string)
-
-    @mock.patch("logging.Formatter.format")
-    def test_format_overwrite(self, format_func):
-        """Overwriting standard Formatter behaviour"""
-        fmt = ColoredFormatter('%(asctime)s [%(levelname)s] %(message)s')
-        record = logging.LogRecord("somename", logging.INFO, __file__, 57, "Hello World", None, None)
-        string = fmt.format(record)
-        format_func.assert_called_with(fmt, record)
+    def test_full_redefinition(self):
+        """Test format of whole output"""
+        fmt = ColoredFormatter('%(name)s %(levelname)s %(message)s',
+                               DEBUG={'FULL': ('GREEN', 'RESET')})
+        record = logging.LogRecord(name='logger', level=logging.DEBUG, pathname='/tmp',
+                                   lineno=23, msg="Something", args=[], exc_info=None, func=None)
+        output = fmt.format(record)
+        self.assertEqual("GREENlogger DEBUG SomethingRESET", output)
 
 
-class Test_FormatStringRegex(unittest.TestCase):
+class TestFormatStringRegex(unittest.TestCase):
     """Test Cases for Format String Search"""
 
     def test_embedded(self):
@@ -214,6 +199,3 @@ class Test_FormatStringRegex(unittest.TestCase):
         self.assertIsNotNone(match)
         self.assertEqual(match.start(), 0)
         self.assertEqual(match.end(), len(fmt))
-
-if __name__ == "__main__":
-    unittest.main()
