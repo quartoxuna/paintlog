@@ -13,7 +13,6 @@ from colorama import Style
 from colorama import Fore
 from colorama import Back
 
-__version__ = '2.4.0'
 __all__ = ['ColoredFormatter', 'Fore', 'Back', 'Style']
 
 # Initialize colorama
