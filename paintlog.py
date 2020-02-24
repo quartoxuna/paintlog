@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-__version__ = '2.0.0'
-
 r"""
 PaintLog
 ========
@@ -123,15 +121,16 @@ also using the **update()** method and the special *general* keyword argument.
    </div>
 """
 
-__all__ = ['ColoredFormatter', 'Fore', 'Back', 'Style']
-
 import re
 import logging
 
 import colorama
 from colorama import Style
-from colorama import Fore as Fore
-from colorama import Back as Back
+from colorama import Fore
+from colorama import Back
+
+__version__ = '2.0.0'
+__all__ = ['ColoredFormatter', 'Fore', 'Back', 'Style']
 
 # Initialize colorama
 colorama.init()
@@ -182,8 +181,13 @@ class ColoredFormatter(logging.Formatter):
 
     @property
     def rules(self):
+        """Returns the current rule definitions
+
+        :rtype: dict
+        """
         return self.__rules
 
+    # pylint: disable=protected-access
     def format(self, record):
         # Python 3.x compatabiity
         if getattr(self, '_style', None):

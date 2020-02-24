@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+"""
+UnitTests for paintlog module
+-----------------------------
+"""
+
 # IMPORTS
 import unittest
 
@@ -194,4 +199,3 @@ class TestFormatStringRegex(unittest.TestCase):
         self.assertIsNotNone(match)
         self.assertEqual(match.start(), 0)
         self.assertEqual(match.end(), len(fmt))
-
