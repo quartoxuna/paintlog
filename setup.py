@@ -33,6 +33,7 @@ setuptools.setup(
 
     test_suite='tests',
     install_requires=[
+        'future',
         'colorama',
     ],
 )
